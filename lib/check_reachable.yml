@@ -1,0 +1,11 @@
+- hosts: localhost
+  connection: localhost
+  become: no
+  gather_facts: no
+
+  tasks:
+    - name: check ssh reachability
+      command: ./ssh_check.py "{{ item }}"
+      args:
+        chdir: ./bin
+      with_items: "{{ servers }}"

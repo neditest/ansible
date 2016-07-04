@@ -1,0 +1,17 @@
+- hosts: "{{ server }}"
+  become: yes
+  gather_facts: no
+
+  vars:
+    device: /dev/vdb
+    dir: /data
+
+  tasks:
+    - name: create filesystem
+      filesystem: fstype=xfs dev="{{ device }}"
+    - name: create directory
+      file: path="{{ dir }}" state=directory
+    - name: mount volume
+      mount: state=mounted name="{{ dir }}" src="{{ device }}" fstype=xfs
+    - name: set selinux context
+      file: path="{{ dir }}" setype=svirt_sandbox_file_t

@@ -1,0 +1,46 @@
+- hosts: all
+  gather_facts: no
+  become: yes
+
+  vars:
+    require:
+      packages:
+        - python-docker-py
+    docker:
+      epmysql:
+        image: "enakai00/epmysql:ver1.0"
+        ports:
+          - "3306:3306"
+        volume: "/data:/var/lib/mysql"
+        expose:
+          - 3306
+        env: {}
+      eplite:
+        image: "enakai00/eplite:ver1.0"
+        ports:
+          - "80:80"
+        volume: None
+        expose:
+          - 80
+        env:
+          FIP: "{{ ansible_ssh_hosts.eplite[0] }}"
+          DB_PORT_3306_TCP_ADDR: "{{ ansible_ssh_hosts.epmysql[0] }}"
+
+  tasks:
+    - name: install require packages
+      yum:
+        state: latest
+        name: "{{ item }}"
+      with_items: "{{ require.packages }}"
+
+    - name: deploy containers
+      docker:
+        state: started
+        name: "{{ openstack.name }}"
+        image: "{{ docker[openstack.name].image }}"
+        ports: "{{ docker[openstack.name].ports }}"
+        expose: "{{ docker[openstack.name].expose }}"
+        volumes: "{{ docker[openstack.name].volume }}"
+        env: "{{ docker[openstack.name].env }}"
+        tty: True
+

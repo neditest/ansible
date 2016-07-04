@@ -1,0 +1,68 @@
+- hosts: localhost
+  connection: localhost
+  become: no
+  gather_facts: no
+
+  vars:
+    os_auth_url: "{{ lookup('env','OS_AUTH_URL') }}"
+    os_username: "{{ lookup('env','OS_USERNAME') }}"
+    os_password: "{{ lookup('env','OS_PASSWORD') }}"
+    os_project_name: "{{ lookup('env','OS_TENANT_NAME') }}"
+    os_region_name: "{{ lookup('env','OS_REGION_NAME') }}"
+
+    config:
+        key_name: "step-server"
+        flavor: "m1.small"
+        image: "centos-base"
+        secgroups:
+          - "eplite"
+        nics:
+          - net-name: "private01"
+          - net-name: "work-net"
+        auto_ip: no
+        #ext_net: "ext-network"
+        ext_net: "Ext-Net"
+        int_net: "private01"
+        int_subnet: "private01-sub"
+        int_subnet_cider: "133.218.176/24"
+
+  tasks:
+    - name: create private01 network
+      os_network:
+        state: present
+        name: "{{config.int_net}}"
+        external: false
+
+    - name: create private01-sub network
+      os_subnet:
+        state: present
+        network_name: "{{config.int_net}}"
+        name: "{{config.int_subnet}}"
+        cidr: "{{config.int_subnet_cider}}"
+        dns_nameservers:
+          - 8.8.8.7
+          - 8.8.8.8
+
+    - name: create servers
+      os_server:
+        state: present
+        timeout: 300
+        name: "{{ item.name }}"
+        key_name: "{{ config.key_name }}"
+        flavor: "{{ config.flavor }}"
+        image: "{{ config.image }}"
+        security_groups: "{{ config.secgroups }}"
+        nics: "{{ config.nics }}"
+        auto_ip: "{{ config.auto_ip }}"
+        meta: "{{ item.meta }}"
+      with_items: "{{ servers }}"
+
+    - name: create and assign floating_ip to server
+      os_floating_ip:
+        state=present
+        reuse=yes
+        network="{{ config.ext_net }}"
+        wait=yes
+        server="{{ item.name }}"
+      with_items: "{{ servers }}"
+
