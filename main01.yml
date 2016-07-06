@@ -3,14 +3,28 @@
 - include: lib/create_instances.yml
   vars:
     servers:
-      - name: epmysql
+      - name: test01
         meta: "managed=yes"
-      - name: eplite
+      - name: test02
         meta: "managed=yes"
 
 - include: lib/attach_volumes.yml
   vars:
     volumes:
-      - name: mysql_volume
-        volsize: 2
-        server: epmysql
+      - name: test_volume
+        volsize: 1
+        server: test02
+
+
+- include: lib/waitfor_instances.yml
+  vars:
+    servers:
+      - name: test01
+        meta: "managed=yes"
+      - name: test02
+        meta: "managed=yes"
+
+
+
+- include: main02.yml
+

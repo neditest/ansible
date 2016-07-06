@@ -1,11 +1,12 @@
 - include: lib/check_reachable.yml
   vars:
     servers:
-      - epmysql
-      - eplite
+      - test01
+      - test02
 
 - include: lib/mount_volume.yml
   vars:
-    server: epmysql
+    server: test02
 
 - include: lib/deploy_eplite.yml
+

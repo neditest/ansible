@@ -20,7 +20,6 @@
           - net-name: "private01"
           - net-name: "work-net"
         auto_ip: no
-        #ext_net: "ext-network"
         ext_net: "Ext-Net"
         int_net: "private01"
         int_subnet: "private01-sub"
@@ -49,6 +48,7 @@
         timeout: 300
         name: "{{ item.name }}"
         key_name: "{{ config.key_name }}"
+        availability_zone: az1
         flavor: "{{ config.flavor }}"
         image: "{{ config.image }}"
         security_groups: "{{ config.secgroups }}"

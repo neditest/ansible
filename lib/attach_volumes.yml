@@ -11,7 +11,7 @@
     os_region_name: "{{ lookup('env','OS_REGION_NAME') }}"
 
   tasks:
-    - name: create database volume
+    - name: create test volume
       os_volume:
         state: present
         size: "{{ item.volsize }}"
@@ -19,7 +19,7 @@
         availability_zone: az1
       with_items: "{{ volumes }}"
 
-    - name: attach database volume
+    - name: attach test volume
       os_server_volume:
         state: present
         server: "{{ item.server }}"
