@@ -12,7 +12,7 @@
 
     config:
         key_name: "step-server"
-        flavor: "m1.small"
+        flavor: "m1.medium"
         image: "centos-base"
         secgroups:
           - "eplite"

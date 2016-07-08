@@ -1,12 +1,17 @@
 - hosts: localhost
-  connection: localhost
+  #gather_facts:yes
   become: no
 
   tasks:
   - name: wait for SSH port up
+    #command: echo {{ servers }}
+    #command: echo {{ inventory_hostname }}
+    #command: echo {{ item.servers }}
     #command: echo {{ item.name }}
-    command: echo {{ hostvars[item.name]['ansible_eth0']['ipv4']['address'] }}
-    #wait_for: host={{ vars.servers }} port=22 state=started delay=1200
-    #wait_for: host={{ hostvars[inventory_hostname]['ansible_eth0']['ipv4']['address'] }} port=22 state=started delay=600
-    delegate_to: 127.0.0.1
-    with_items: "{{ servers }}"
+    #command: echo {{ hostvars[item.name]['ansible_eth0']['ipv4']['address'] }}
+    #local_action: wait_for host={{ hostvars[inventory_hostname]['ansible_eth0']['ipv4']['address'] }} port=22 state=started delay=600
+    #local_action: wait_for host={{ hostvars[ item ]['ansible_eth0']['ipv4']['address'] }} port=22 state=started delay=600
+    #local_action: wait_for host={{ hostvars[ 'test02' ]['ansible_eth0']['ipv4']['address'] }} port=22 state=started delay=600
+    #local_action: wait_for host={{ hostvars'{{ servers }}'['ansible_eth0']['ipv4']['address'] }} port=22 state=started delay=6   
+    local_action: wait_for host={{ ipaddress }} port=22 state=started delay=6
+#with_items: "{{ servers }}"

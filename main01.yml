@@ -18,12 +18,7 @@
 
 - include: lib/waitfor_instances.yml
   vars:
-    servers:
-      - name: test01
-        meta: "managed=yes"
-      - name: test02
-        meta: "managed=yes"
-
+    servers: test02
 
 
 - include: main02.yml
